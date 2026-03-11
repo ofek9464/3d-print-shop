@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Premium 3D printed models — toys, tools, home decor, gaming accessories, mechanical parts, and custom sculptures. Choose materials, colors, and order online.">
+  <title>3D Print Shop — Premium Custom 3D Printed Models</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Favicon (inline SVG as data URI) -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>">
+</head>
+
+<body>
+
+  <!-- ============================
+       NAVIGATION
+       ============================ -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="/" class="nav-brand" id="nav-brand">
+        <div class="brand-icon">🧊</div>
+        <span>3D Print Shop</span>
+      </a>
+
+      <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search models, categories..." autocomplete="off">
+      </div>
+
+      <div class="nav-actions">
+        <a href="admin.html" class="nav-btn" id="admin-link" title="Admin Panel">
+          <span>⚙️</span>
+          <span>Admin</span>
+        </a>
+        <button class="nav-btn cart-btn" id="cart-btn" title="Shopping Cart">
+          <span>🛒</span>
+          <span>Cart</span>
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================
+       HERO SECTION
+       ============================ -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <h1>Premium <span class="gradient-text">3D Printed</span> Models</h1>
+      <p class="subtitle">
+        From concept to reality — explore our curated collection of precision 3D prints.
+        Choose your material, color, and finish for the perfect piece.
+      </p>
+      <div class="hero-cta">
+        <a href="#products" class="btn btn-primary btn-lg" id="hero-browse-btn">
+          Browse Catalog
+          <span>→</span>
+        </a>
+        <button class="btn btn-secondary btn-lg" id="hero-custom-btn">
+          Custom Print Request
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       CATEGORY FILTER
+       ============================ -->
+  <section class="filter-section" id="filter-section">
+    <div class="container">
+      <div class="filter-bar" id="filter-bar">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       PRODUCTS GRID
+       ============================ -->
+  <section class="products-section" id="products">
+    <div class="container">
+      <div class="section-header">
+        <h2>
+          Our Collection
+          <span class="product-count" id="product-count">18 products</span>
+        </h2>
+        <select class="sort-select" id="sort-select">
+          <option value="default">Sort by: Default</option>
+          <option value="price-low">Price: Low → High</option>
+          <option value="price-high">Price: High → Low</option>
+          <option value="name">Name: A → Z</option>
+        </select>
+      </div>
+      <div class="products-grid" id="products-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       PRODUCT DETAIL MODAL
+       ============================ -->
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+
+  <div class="product-modal" id="product-modal">
+    <button class="modal-close" id="modal-close" title="Close">✕</button>
+
+    <!-- 3D Viewer -->
+    <div class="modal-viewer">
+      <div id="modal-viewer-container" style="width:100%;height:100%;"></div>
+      <div class="viewer-hint">
+        <span>🖱️</span> Drag to rotate · Scroll to zoom
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="modal-details">
+      <div>
+        <span class="modal-category" id="modal-category">TOYS</span>
+        <h2 class="modal-title" id="modal-title">Dragon Figurine</h2>
+      </div>
+
+      <p class="modal-description" id="modal-description">
+        Majestic dragon figurine with intricate detail.
+      </p>
+
+      <!-- Dimensions -->
+      <div class="modal-dimensions">
+        <div class="dimension-item">
+          <div class="dim-label">Width</div>
+          <div class="dim-value" id="modal-dim-w">12 cm</div>
+        </div>
+        <div class="dimension-item">
+          <div class="dim-label">Height</div>
+          <div class="dim-value" id="modal-dim-h">15 cm</div>
+        </div>
+        <div class="dimension-item">
+          <div class="dim-label">Depth</div>
+          <div class="dim-value" id="modal-dim-d">8 cm</div>
+        </div>
+      </div>
+
+      <!-- Color Picker -->
+      <div class="option-group">
+        <div class="option-label">
+          Color: <span class="selected-value" id="selected-color-name">Purple</span>
+        </div>
+        <div class="color-options" id="color-options">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Material Selector -->
+      <div class="option-group">
+        <div class="option-label">Material</div>
+        <div class="material-options" id="material-options">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="option-group">
+        <div class="option-label">Quantity</div>
+        <div class="quantity-selector">
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQuantity(-1)" id="qty-minus">−</button>
+            <span class="qty-value" id="modal-qty-value">1</span>
+            <button class="qty-btn" onclick="changeQuantity(1)" id="qty-plus">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customization Request -->
+      <div class="option-group">
+        <button class="customization-toggle" id="customization-toggle" type="button"
+          style="display:flex; align-items:center; gap:8px; width:100%; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); color:var(--text-primary); font-weight:600; font-size:0.88rem; cursor:pointer; transition:all 0.2s;">
+          <span>🎨</span> Add Customization
+          <span style="margin-left:auto; font-size:0.7rem; color:var(--text-muted);" id="custom-toggle-arrow">▼</span>
+        </button>
+
+        <div id="customization-panel"
+          style="display:none; margin-top:10px; padding:14px; background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md);">
+          <!-- Custom Notes -->
+          <div style="margin-bottom:12px;">
+            <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Custom
+              Request / Instructions</label>
+            <textarea id="modal-custom-notes" rows="3"
+              placeholder="e.g. Add my company logo to the front, use a specific text, engrave initials..."
+              style="width:100%; padding:10px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem; resize:vertical;"></textarea>
+          </div>
+
+          <!-- Attachment Upload -->
+          <div style="margin-bottom:12px;">
+            <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:4px;">Attach Files
+              (logo, reference image, etc.)</label>
+            <div id="modal-attach-zone"
+              style="border:2px dashed var(--border-light); border-radius:var(--radius-md); padding:16px; text-align:center; cursor:pointer; transition:border-color 0.2s;">
+              <span style="font-size:1.5rem;">📎</span>
+              <div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Click or drag to attach files
+              </div>
+              <div style="font-size:0.72rem; color:var(--text-muted);">.JPG, .PNG, .SVG, .PDF, .AI — Max 20MB</div>
+              <input type="file" id="modal-attach-input" accept=".jpg,.jpeg,.png,.svg,.pdf,.ai,.eps" multiple
+                style="display:none;">
+            </div>
+            <!-- Attached files list -->
+            <div id="modal-attached-files" style="margin-top:8px;"></div>
+          </div>
+
+          <!-- Placement Selector -->
+          <div>
+            <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Logo /
+              Design Placement</label>
+            <div id="placement-options" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;">
+              <button type="button" class="placement-btn active" data-placement="front"
+                style="padding:8px; border-radius:var(--radius-md); font-size:0.78rem; border:1px solid var(--border-subtle); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; transition:all 0.2s;">
+                ⬆️ Front
+              </button>
+              <button type="button" class="placement-btn" data-placement="back"
+                style="padding:8px; border-radius:var(--radius-md); font-size:0.78rem; border:1px solid var(--border-subtle); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; transition:all 0.2s;">
+                ⬇️ Back
+              </button>
+              <button type="button" class="placement-btn" data-placement="top"
+                style="padding:8px; border-radius:var(--radius-md); font-size:0.78rem; border:1px solid var(--border-subtle); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; transition:all 0.2s;">
+                🔝 Top
+              </button>
+              <button type="button" class="placement-btn" data-placement="left"
+                style="padding:8px; border-radius:var(--radius-md); font-size:0.78rem; border:1px solid var(--border-subtle); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; transition:all 0.2s;">
+                ◀️ Left
+              </button>
+              <button type="button" class="placement-btn" data-placement="right"
+                style="padding:8px; border-radius:var(--radius-md); font-size:0.78rem; border:1px solid var(--border-subtle); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; transition:all 0.2s;">
+                ▶️ Right
+              </button>
+              <button type="button" class="placement-btn" data-placement="bottom"
+                style="padding:8px; border-radius:var(--radius-md); font-size:0.78rem; border:1px solid var(--border-subtle); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; transition:all 0.2s;">
+                🔽 Bottom
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price + Add to Cart -->
+      <div class="modal-price-section">
+        <div>
+          <div class="modal-total-label">Total Price</div>
+          <div class="modal-total-price" id="modal-total-price">$29.99</div>
+        </div>
+      </div>
+
+      <button class="modal-add-cart" onclick="addToCart()" id="add-to-cart-btn">
+        🛒 Add to Cart
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================
+       CUSTOM ORDER MODAL
+       ============================ -->
+  <div class="custom-modal" id="custom-modal">
+    <button class="modal-close" id="custom-modal-close" title="Close">✕</button>
+
+    <h2>Custom <span class="gradient-text">3D Print</span> Request</h2>
+    <p class="modal-subtitle">Upload your 3D model file <strong>or a photo/sketch</strong> and we'll give you an instant
+      price estimate.</p>
+
+    <!-- Upload Zone -->
+    <div class="upload-zone" id="upload-zone">
+      <span class="upload-icon">📂</span>
+      <div class="upload-text">Drop your file here or click to browse</div>
+      <div class="upload-hint">3D Models: .STL, .OBJ, .3MF, .STEP &nbsp;|&nbsp; Images: .JPG, .PNG, .WEBP — Max 100MB
+      </div>
+      <input type="file" id="custom-file-input" accept=".stl,.obj,.3mf,.step,.stp,.jpg,.jpeg,.png,.webp">
+    </div>
+
+    <!-- File Info -->
+    <div class="upload-file-info" id="upload-file-info">
+      <span class="file-icon" id="file-type-icon">📄</span>
+      <span class="file-name" id="uploaded-file-name">model.stl</span>
+      <span class="file-size" id="uploaded-file-size">2.4 MB</span>
+      <span class="file-remove" id="file-remove" title="Remove file">✕</span>
+    </div>
+
+    <!-- Photo Preview (for image uploads) -->
+    <div id="photo-preview-container" style="display:none; margin-bottom:16px;">
+      <div
+        style="font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        🖼️ Photo Preview
+      </div>
+      <img id="photo-preview-img" src="" alt="Uploaded photo"
+        style="width:100%; max-height:300px; object-fit:contain; border-radius:var(--radius-lg); border:1px solid var(--border-subtle); background:var(--bg-card);">
+    </div>
+
+    <!-- STL 3D Preview -->
+    <div id="stl-preview-container" style="display:none; margin-bottom:16px;">
+      <div
+        style="font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        🔄 3D Preview <span style="font-weight:400; color:var(--text-muted);">— drag to rotate, scroll to zoom</span>
+      </div>
+      <div id="stl-viewer"
+        style="width:100%; height:280px; border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border-subtle); background:var(--bg-card);">
+      </div>
+    </div>
+
+    <div class="custom-form-grid">
+      <div class="form-group">
+        <label for="custom-width">Width (cm)</label>
+        <input type="number" id="custom-width" placeholder="e.g. 10" min="0.1" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="custom-height">Height (cm)</label>
+        <input type="number" id="custom-height" placeholder="e.g. 15" min="0.1" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="custom-depth">Depth (cm)</label>
+        <input type="number" id="custom-depth" placeholder="e.g. 8" min="0.1" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="custom-material">Material</label>
+        <select id="custom-material">
+          <option value="">Select material...</option>
+          <option value="pla">PLA — Standard</option>
+          <option value="pla_plus">PLA+ — Enhanced</option>
+          <option value="matt_pla">Matt PLA — Matte Finish</option>
+          <option value="petg">PETG — Outdoor Ready</option>
+          <option value="abs">ABS — Heat Resistant</option>
+          <option value="tpu">TPU — Flexible</option>
+        </select>
+      </div>
+      <div class="form-group full-width">
+        <label for="custom-notes">Additional Notes (optional)</label>
+        <textarea id="custom-notes"
+          placeholder="Any special requirements, color preferences, infill percentage..."></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-lg" id="estimate-btn" style="width:100%;justify-content:center;">
+      💰 Get Price Estimate
+    </button>
+
+    <!-- Estimate Result -->
+    <div class="estimate-result" id="estimate-result">
+      <div class="estimate-label">Estimated Price</div>
+      <div class="estimate-price" id="estimate-price-value">$24.99</div>
+      <div class="estimate-note" id="estimate-volume">Estimated volume: 42.0 cm³</div>
+      <div class="estimate-note">* Final price may vary based on model complexity and support structures</div>
+      <button class="btn btn-primary mt-lg" style="margin-top:16px;"
+        onclick="showToast('📧', 'Request submitted! We will contact you shortly.')">
+        📧 Submit Order Request
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================
+       CART DRAWER
+       ============================ -->
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h3>🛒 Shopping Cart</h3>
+      <button class="cart-drawer-close" id="cart-drawer-close" title="Close cart">✕</button>
+    </div>
+
+    <div class="cart-items" id="cart-items">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span class="subtotal-value" id="cart-subtotal-value">$0.00</span>
+      </div>
+      <button class="cart-checkout-btn" id="checkout-btn"
+        onclick="showToast('🚧', 'Checkout coming soon — Stripe integration pending!')">
+        Proceed to Checkout →
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================
+       FOOTER
+       ============================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <span>© 2026 3D Print Shop. All rights reserved.</span>
+        <div class="footer-links">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================
+       TOAST CONTAINER
+       ============================ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ============================
+       SCRIPTS
+       ============================ -->
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // OrbitControls inline (r128 compatible)
+    // Minimal OrbitControls implementation
+    THREE.OrbitControls = function (camera, domElement) {
+      this.camera = camera;
+      this.domElement = domElement;
+      this.target = new THREE.Vector3();
+      this.enableDamping = true;
+      this.dampingFactor = 0.08;
+      this.enablePan = false;
+      this.minDistance = 2;
+      this.maxDistance = 10;
+      this.autoRotate = false;
+      this.autoRotateSpeed = 1.5;
+
+      let isPointerDown = false;
+      let prevPointer = { x: 0, y: 0 };
+      let spherical = new THREE.Spherical();
+      let sphericalDelta = new THREE.Spherical();
+      let scale = 1;
+
+      // Compute initial spherical
+      const offset = new THREE.Vector3();
+      offset.copy(camera.position).sub(this.target);
+      spherical.setFromVector3(offset);
+
+      const onPointerDown = (e) => {
+        isPointerDown = true;
+        prevPointer = { x: e.clientX, y: e.clientY };
+        domElement.style.cursor = 'grabbing';
+      };
+
+      const onPointerMove = (e) => {
+        if (!isPointerDown) return;
+        const dx = e.clientX - prevPointer.x;
+        const dy = e.clientY - prevPointer.y;
+        prevPointer = { x: e.clientX, y: e.clientY };
+
+        sphericalDelta.theta -= dx * 0.01;
+        sphericalDelta.phi -= dy * 0.01;
+      };
+
+      const onPointerUp = () => {
+        isPointerDown = false;
+        domElement.style.cursor = 'grab';
+      };
+
+      const onWheel = (e) => {
+        e.preventDefault();
+        if (e.deltaY > 0) {
+          scale *= 1.05;
+        } else {
+          scale *= 0.95;
+        }
+      };
+
+      domElement.addEventListener('pointerdown', onPointerDown);
+      domElement.addEventListener('pointermove', onPointerMove);
+      domElement.addEventListener('pointerup', onPointerUp);
+      domElement.addEventListener('pointerleave', onPointerUp);
+      domElement.addEventListener('wheel', onWheel, { passive: false });
+      domElement.style.cursor = 'grab';
+
+      this.update = () => {
+        // Auto rotate
+        if (this.autoRotate && !isPointerDown) {
+          sphericalDelta.theta -= (this.autoRotateSpeed * Math.PI / 180) * 0.016;
+        }
+
+        // Apply damping
+        if (this.enableDamping) {
+          spherical.theta += sphericalDelta.theta * (1 - this.dampingFactor * 0.3);
+          spherical.phi += sphericalDelta.phi * (1 - this.dampingFactor * 0.3);
+          sphericalDelta.theta *= this.dampingFactor;
+          sphericalDelta.phi *= this.dampingFactor;
+        } else {
+          spherical.theta += sphericalDelta.theta;
+          spherical.phi += sphericalDelta.phi;
+          sphericalDelta.set(0, 0, 0);
+        }
+
+        // Clamp phi
+        spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+
+        // Scale
+        spherical.radius *= scale;
+        spherical.radius = Math.max(this.minDistance, Math.min(this.maxDistance, spherical.radius));
+        scale = 1;
+
+        // Update camera
+        offset.setFromSpherical(spherical);
+        camera.position.copy(this.target).add(offset);
+        camera.lookAt(this.target);
+      };
+
+      this.dispose = () => {
+        domElement.removeEventListener('pointerdown', onPointerDown);
+        domElement.removeEventListener('pointermove', onPointerMove);
+        domElement.removeEventListener('pointerup', onPointerUp);
+        domElement.removeEventListener('pointerleave', onPointerUp);
+        domElement.removeEventListener('wheel', onWheel);
+      };
+    };
+
+    // ParametricGeometry for r128
+    if (!THREE.ParametricGeometry) {
+      THREE.ParametricGeometry = class extends THREE.BufferGeometry {
+        constructor(func, slices, stacks) {
+          super();
+          const vertices = [];
+          const normals = [];
+          const uvs = [];
+          const indices = [];
+          const p = new THREE.Vector3();
+
+          for (let i = 0; i <= stacks; i++) {
+            const v = i / stacks;
+            for (let j = 0; j <= slices; j++) {
+              const u = j / slices;
+              func(u, v, p);
+              vertices.push(p.x, p.y, p.z);
+              normals.push(0, 1, 0);
+              uvs.push(u, v);
+            }
+          }
+
+          for (let i = 0; i < stacks; i++) {
+            for (let j = 0; j < slices; j++) {
+              const a = i * (slices + 1) + j;
+              const b = a + slices + 1;
+              indices.push(a, b, a + 1);
+              indices.push(b, b + 1, a + 1);
+            }
+          }
+
+          this.setIndex(indices);
+          this.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+          this.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+          this.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+          this.computeVertexNormals();
+        }
+      };
+    }
+  </script>
+
+  <!-- App Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/viewer.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/custom-order.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Wire up hero custom button -->
+  <script>
+    document.getElementById('hero-custom-btn').addEventListener('click', () => {
+      if (appInstance) appInstance.openCustomModal();
+    });
+  </script>
+</body>
+
+</html>

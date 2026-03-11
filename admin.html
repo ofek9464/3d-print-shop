@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel — 3D Print Shop</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+
+<body>
+
+    <!-- ============================
+       ADMIN LOGIN
+       ============================ -->
+    <div class="admin-login-container" id="admin-login">
+        <div class="admin-login-card">
+            <div class="text-center" style="margin-bottom: 24px;">
+                <div style="font-size: 3rem; margin-bottom: 8px;">🔒</div>
+            </div>
+            <h1>Admin Access</h1>
+            <p class="login-subtitle">Enter your credentials to manage the store.</p>
+
+            <form id="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="admin-username">Username</label>
+                    <input type="text" id="admin-username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" id="login-btn">
+                    Sign In →
+                </button>
+            </form>
+
+            <div class="login-error" id="login-error">
+                Invalid credentials. Please try again.
+            </div>
+
+            <p style="text-align:center; margin-top:24px; font-size:0.82rem; color:var(--text-muted);">
+                <a href="index.html">← Back to Store</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ============================
+       ADMIN DASHBOARD
+       ============================ -->
+    <div class="admin-dashboard" id="admin-dashboard">
+
+        <!-- Admin Nav -->
+        <div class="admin-nav">
+            <div class="admin-nav-brand">
+                <a href="index.html" style="color: var(--text-primary); text-decoration: none;">🧊 3D Print Shop</a>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <span style="color:var(--text-muted); font-size:0.85rem;" id="admin-user-label">Logged in as
+                    Admin</span>
+                <button class="btn btn-sm btn-secondary" id="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="container" style="padding-top: 16px;">
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-products">18</div>
+                    <div class="stat-label">Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-categories">6</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-materials">6</div>
+                    <div class="stat-label">Materials</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-orders">0</div>
+                    <div class="stat-label">Pending Orders</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs" id="admin-tabs">
+            <button class="admin-tab active" data-tab="products">📦 Products</button>
+            <button class="admin-tab" data-tab="materials">🧪 Materials & Pricing</button>
+            <button class="admin-tab" data-tab="catalog">🎨 Colors & Materials</button>
+            <button class="admin-tab" data-tab="pricing">🧪 Pricing</button>
+            <button class="admin-tab" data-tab="settings">⚙️ Settings</button>
+        </div>
+
+        <!-- Content -->
+        <div class="admin-content">
+
+            <!-- ===== Products Tab ===== -->
+            <div class="admin-section active" id="section-products">
+                <div class="admin-card">
+                    <div
+                        style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h3 style="margin-bottom:4px;">📦 Product Management</h3>
+                            <p style="color:var(--text-muted); font-size:0.9rem;">
+                                Edit prices, move products between categories, add new products, or remove existing
+                                ones.
+                            </p>
+                        </div>
+                        <button class="btn btn-primary" id="add-product-btn">➕ Add New Product</button>
+                    </div>
+
+                    <!-- Add Product Form (hidden by default) -->
+                    <div id="add-product-form"
+                        style="display:none; background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px;">
+                        <h4 style="margin-bottom:16px; color:var(--accent-primary);">➕ New Product</h4>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div class="form-group">
+                                <label for="new-product-name">Product Name *</label>
+                                <input type="text" id="new-product-name" placeholder="e.g. Dragon Figurine">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-category">Category *</label>
+                                <select id="new-product-category">
+                                    <option value="toys">🎮 Toys & Figures</option>
+                                    <option value="tools">🔧 Tools & Accessories</option>
+                                    <option value="home">🏠 Home Decor</option>
+                                    <option value="gaming">🎲 Gaming</option>
+                                    <option value="mechanical">⚙️ Mechanical Parts</option>
+                                    <option value="art">🎨 Art & Sculptures</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="grid-column:1/-1;">
+                                <label for="new-product-desc">Description *</label>
+                                <textarea id="new-product-desc" placeholder="Short description of the product..."
+                                    style="min-height:60px;"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-price">Base Price ($) *</label>
+                                <input type="number" id="new-product-price" placeholder="29.99" min="0.01" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-weight">Weight (grams) *</label>
+                                <input type="number" id="new-product-weight" placeholder="150" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-model">3D Preview Shape</label>
+                                <select id="new-product-model">
+                                    <option value="torusKnot">Torus Knot</option>
+                                    <option value="robot">Robot</option>
+                                    <option value="castle">Castle</option>
+                                    <option value="stand">Phone Stand</option>
+                                    <option value="organizer">Organizer</option>
+                                    <option value="toolHolder">Tool Holder</option>
+                                    <option value="vase">Vase</option>
+                                    <option value="hexShelf">Hex Shelf</option>
+                                    <option value="lampShade">Lamp Shade</option>
+                                    <option value="controllerStand">Controller Stand</option>
+                                    <option value="diceTower">Dice Tower</option>
+                                    <option value="terrain">Terrain</option>
+                                    <option value="gear">Gear</option>
+                                    <option value="bearing">Bearing</option>
+                                    <option value="bracket">Bracket</option>
+                                    <option value="wave">Wave</option>
+                                    <option value="geodesic">Geodesic</option>
+                                    <option value="spiral">Spiral</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-color">Default Color</label>
+                                <input type="color" id="new-product-color" value="#2196F3"
+                                    style="height:38px; cursor:pointer;">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-w">Width (cm)</label>
+                                <input type="number" id="new-product-w" placeholder="10" min="0.1" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-h">Height (cm)</label>
+                                <input type="number" id="new-product-h" placeholder="10" min="0.1" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-product-d">Depth (cm)</label>
+                                <input type="number" id="new-product-d" placeholder="10" min="0.1" step="0.1">
+                            </div>
+                            <div class="form-group" style="grid-column:1/-1;">
+                                <label for="new-product-file">Product Image / STL File</label>
+                                <div id="admin-upload-zone"
+                                    style="border:2px dashed var(--border-light); border-radius:var(--radius-md); padding:20px; text-align:center; cursor:pointer; transition:border-color 0.2s;">
+                                    <span style="font-size:1.5rem;">📷</span>
+                                    <div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Click to
+                                        upload product photo or STL file</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted);">.JPG, .PNG, .WEBP, .STL —
+                                        Max 10MB</div>
+                                    <input type="file" id="new-product-file" accept=".jpg,.jpeg,.png,.webp,.stl"
+                                        style="display:none;">
+                                </div>
+                                <div id="admin-file-preview"
+                                    style="display:none; margin-top:8px; padding:10px; background:var(--bg-secondary); border-radius:var(--radius-md);">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span id="admin-file-icon">📄</span>
+                                        <span id="admin-file-name"
+                                            style="flex:1; font-size:0.82rem; overflow:hidden; text-overflow:ellipsis;"></span>
+                                        <button type="button" id="admin-file-remove"
+                                            style="background:none; border:none; color:var(--color-error); cursor:pointer; font-size:1rem;">✕</button>
+                                    </div>
+                                    <img id="admin-img-preview" src="" alt="Preview"
+                                        style="display:none; margin-top:8px; max-height:120px; border-radius:var(--radius-md);">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:12px; margin-top:16px;">
+                            <button class="btn btn-primary" id="add-product-save">✅ Add Product</button>
+                            <button class="btn btn-secondary" id="add-product-cancel">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table" id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Base Price ($)</th>
+                                    <th>Weight</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-tbody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 20px; display:flex; gap:12px;">
+                        <button class="btn btn-primary" id="save-products-btn">💾 Save All Changes</button>
+                        <button class="btn btn-secondary" id="reset-products-btn">↩ Reset to Defaults</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Colors & Materials Tab ===== -->
+            <div class="admin-section" id="section-catalog">
+
+                <!-- Materials card -->
+                <div class="admin-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+                        <div>
+                            <h3 style="margin-bottom:4px;">🧱 Materials</h3>
+                            <p style="color:var(--text-muted);font-size:0.9rem;">Enable/disable materials, edit names, descriptions and price multipliers.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="save-catalog-btn">💾 Save All</button>
+                    </div>
+                    <div id="materials-catalog-list"></div>
+                </div>
+
+                <!-- Colors card -->
+                <div class="admin-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+                        <div>
+                            <h3 style="margin-bottom:4px;">🎨 Colors</h3>
+                            <p style="color:var(--text-muted);font-size:0.9rem;">Enable/disable colors and add new ones to the global palette.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="add-color-btn">➕ Add Color</button>
+                    </div>
+
+                    <!-- Add color form -->
+                    <div id="add-color-form" style="display:none;padding:16px;background:var(--bg-secondary);border-radius:var(--radius-md);margin-bottom:16px;">
+                        <div style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:end;">
+                            <div class="form-group" style="margin:0;">
+                                <label>Color Picker</label>
+                                <input type="color" id="new-color-hex" value="#FF5733" style="height:38px;width:56px;cursor:pointer;">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Color Name</label>
+                                <input type="text" id="new-color-name" placeholder="e.g. Coral Red">
+                            </div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn btn-primary btn-sm" id="confirm-add-color">Add</button>
+                                <button class="btn btn-secondary btn-sm" id="cancel-add-color">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="colors-catalog-list"></div>
+                </div>
+            </div>
+
+            <!-- ===== Pricing Tab ===== -->
+            <div class="admin-section" id="section-pricing">
+                <div class="admin-card">
+                    <h3>🧪 Material Pricing Multipliers</h3>
+                    <p style="color:var(--text-muted); margin-bottom:20px; font-size:0.9rem;">
+                        Set the price multiplier per material. Final price = Base Price × Multiplier.
+                    </p>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table" id="materials-table">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>Description</th>
+                                    <th>Multiplier</th>
+                                    <th>Example (on $10 base)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="materials-tbody"><!-- Rendered by JS --></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:20px;display:flex;gap:12px;">
+                        <button class="btn btn-primary" id="save-materials-btn">💾 Save Changes</button>
+                        <button class="btn btn-secondary" id="reset-materials-btn">↩ Reset to Defaults</button>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>💰 Custom Order Base Rate</h3>
+                    <p style="color:var(--text-muted); margin-bottom:20px; font-size:0.9rem;">
+                        Set the per-cm³ rate and setup fee for custom print orders.
+                    </p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; max-width:400px;">
+                        <div class="form-group">
+                            <label for="custom-rate">Rate per cm³ ($)</label>
+                            <input type="number" id="custom-rate" value="0.12" min="0.01" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-setup-fee">Setup Fee ($)</label>
+                            <input type="number" id="custom-setup-fee" value="5.00" min="0" step="0.50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ===== Settings Tab ===== -->
+            <div class="admin-section" id="section-settings">
+                <div class="admin-card">
+                    <h3>🔐 Change Password</h3>
+                    <p style="color:var(--text-muted); margin-bottom:20px; font-size:0.9rem;">
+                        Update the admin password. Use a strong password with at least 8 characters.
+                    </p>
+                    <div style="max-width:400px;">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" placeholder="Re-enter new password">
+                        </div>
+                        <button class="btn btn-primary" id="change-password-btn">🔒 Update Password</button>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>ℹ️ Security Notes</h3>
+                    <div style="color:var(--text-secondary); font-size:0.9rem; line-height:1.8;">
+                        <p><strong style="color:var(--color-warning);">⚠️ Development Mode</strong></p>
+                        <p>This admin panel uses client-side authentication for development purposes.
+                            Before going to production, you need to implement:</p>
+                        <ul style="margin:12px 0 12px 20px;">
+                            <li>Server-side authentication with bcrypt password hashing</li>
+                            <li>JWT tokens with secure HTTP-only cookies</li>
+                            <li>HTTPS/SSL certificate</li>
+                            <li>CSRF protection</li>
+                            <li>Rate limiting on login attempts</li>
+                            <li>Database-backed product/pricing storage</li>
+                            <li>Stripe payment integration</li>
+                        </ul>
+                        <p>See the project documentation for the full production deployment guide.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
