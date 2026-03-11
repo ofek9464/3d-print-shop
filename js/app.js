@@ -73,7 +73,92 @@ class App {
                 this.renderProducts();
             });
         }
+
+        // ---- Theme Toggle ----
+        this.initTheme();
+        const themeBtn = document.getElementById('theme-toggle');
+        const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+        const toggleTheme = () => {
+            const isLight = document.documentElement.dataset.theme === 'light';
+            const next = isLight ? 'dark' : 'light';
+            document.documentElement.dataset.theme = next === 'dark' ? '' : 'light';
+            localStorage.setItem('theme', next);
+            const icon = next === 'light' ? '☀️' : '🌙';
+            if (themeBtn) themeBtn.textContent = icon;
+            if (mobileThemeBtn) mobileThemeBtn.textContent = `${icon} Toggle Light / Dark Mode`;
+        };
+        if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+        if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', toggleTheme);
+
+        // ---- Hamburger Menu ----
+        const hamburger = document.getElementById('hamburger');
+        const mobileDrawer = document.getElementById('nav-mobile-drawer');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+
+        if (hamburger && mobileDrawer) {
+            hamburger.addEventListener('click', () => {
+                const isOpen = hamburger.classList.toggle('open');
+                hamburger.setAttribute('aria-expanded', isOpen);
+                if (isOpen) {
+                    mobileDrawer.style.display = 'block';
+                    requestAnimationFrame(() => mobileDrawer.classList.add('open'));
+                } else {
+                    mobileDrawer.classList.remove('open');
+                    setTimeout(() => { mobileDrawer.style.display = 'none'; }, 250);
+                }
+            });
+
+            // Close drawer when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !mobileDrawer.contains(e.target)) {
+                    hamburger.classList.remove('open');
+                    hamburger.setAttribute('aria-expanded', false);
+                    mobileDrawer.classList.remove('open');
+                    setTimeout(() => { mobileDrawer.style.display = 'none'; }, 250);
+                }
+            });
+        }
+
+        // Sync mobile search → desktop search
+        if (mobileSearchInput) {
+            let mobileTimeout;
+            mobileSearchInput.addEventListener('input', () => {
+                clearTimeout(mobileTimeout);
+                mobileTimeout = setTimeout(() => {
+                    this.searchTerm = mobileSearchInput.value.trim().toLowerCase();
+                    if (searchInput) searchInput.value = mobileSearchInput.value;
+                    this.renderProducts();
+                }, 300);
+            });
+        }
+
+        // Mobile cart button
+        const mobileCartBtn = document.getElementById('mobile-cart-btn');
+        if (mobileCartBtn) {
+            mobileCartBtn.addEventListener('click', () => {
+                hamburger?.classList.remove('open');
+                mobileDrawer?.classList.remove('open');
+                setTimeout(() => { if(mobileDrawer) mobileDrawer.style.display = 'none'; }, 250);
+                this.toggleCart();
+            });
+        }
     }
+
+    initTheme() {
+        // 1. Check localStorage, 2. Fall back to system preference
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme === 'light') {
+            document.documentElement.dataset.theme = 'light';
+        }
+        const icon = theme === 'light' ? '☀️' : '🌙';
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) themeBtn.textContent = icon;
+        const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+        if (mobileThemeBtn) mobileThemeBtn.textContent = `${icon} Toggle Light / Dark Mode`;
+    }
+
 
     // ========================
     // CATEGORIES

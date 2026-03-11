@@ -38,6 +38,27 @@ class AdminPanel {
         this.setupLoginForm();
         this.setupLogout();
         this.setupTabs();
+        this.initAdminTheme();
+    }
+
+    // ---------- Theme Toggle ----------
+    initAdminTheme() {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme === 'light') document.documentElement.dataset.theme = 'light';
+
+        const btn = document.getElementById('admin-theme-toggle');
+        if (btn) {
+            btn.textContent = theme === 'light' ? '☀️' : '🌙';
+            btn.addEventListener('click', () => {
+                const isLight = document.documentElement.dataset.theme === 'light';
+                const next = isLight ? 'dark' : 'light';
+                document.documentElement.dataset.theme = next === 'dark' ? '' : 'light';
+                localStorage.setItem('theme', next);
+                btn.textContent = next === 'light' ? '☀️' : '🌙';
+            });
+        }
     }
 
     // ---------- Custom Products Persistence ----------

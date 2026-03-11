@@ -22,18 +22,19 @@
        NAVIGATION
        ============================ -->
   <nav class="navbar" id="navbar">
-    <div class="container">
-      <a href="/" class="nav-brand" id="nav-brand">
+    <div class="container" style="display:flex; align-items:center; gap:12px;">
+      <a href="/" class="nav-brand" id="nav-brand" style="flex-shrink:0;">
         <div class="brand-icon">🧊</div>
         <span>3D Print Shop</span>
       </a>
 
-      <div class="nav-search">
+      <div class="nav-search" style="flex:1;">
         <span class="search-icon">🔍</span>
         <input type="text" id="search-input" placeholder="Search models, categories..." autocomplete="off">
       </div>
 
-      <div class="nav-actions">
+      <div class="nav-actions" style="flex-shrink:0; display:flex; align-items:center; gap:8px;">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">🌙</button>
         <a href="admin.html" class="nav-btn" id="admin-link" title="Admin Panel">
           <span>⚙️</span>
           <span>Admin</span>
@@ -44,8 +45,27 @@
           <span class="cart-count" id="cart-count">0</span>
         </button>
       </div>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="nav-mobile-drawer" id="nav-mobile-drawer" role="navigation">
+    <div class="nav-mobile-search">
+      <span>🔍</span>
+      <input type="text" id="mobile-search-input" placeholder="Search models...">
+    </div>
+    <div class="nav-mobile-links">
+      <a href="admin.html">⚙️ Admin Panel</a>
+      <button id="mobile-cart-btn">🛒 Cart <span id="mobile-cart-count"></span></button>
+      <button id="mobile-theme-toggle">🌙 Toggle Light / Dark Mode</button>
+    </div>
+  </div>
+
 
   <!-- ============================
        HERO SECTION
