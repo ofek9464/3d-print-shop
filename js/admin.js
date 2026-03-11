@@ -32,7 +32,7 @@ class AdminPanel {
     }
 
     init() {
-        this.adminUploadedFile = null; // { dataUrl, name, type }
+        this.adminUploadedFiles = []; // [{ dataUrl, name, type, kind: 'image'|'3d' }]
         this.loadCustomProducts();
         this.checkSession();
         this.setupLoginForm();
@@ -374,13 +374,14 @@ class AdminPanel {
         showAdminToast('✅', `"${name}" added to the palette!`);
     }
 
-    // ---------- Admin File Upload ----------
+    // ---------- Admin File Upload (multi-file) ----------
     setupAdminFileUpload() {
         const zone = document.getElementById('admin-upload-zone');
         const input = document.getElementById('new-product-file');
-        const removeBtn = document.getElementById('admin-file-remove');
-
         if (!zone || !input) return;
+
+        // Init storage
+        this.adminUploadedFiles = []; // { dataUrl, name, type, kind: 'image'|'3d' }
 
         zone.addEventListener('click', () => input.click());
 
@@ -397,73 +398,98 @@ class AdminPanel {
             e.preventDefault();
             zone.style.borderColor = 'var(--border-light)';
             zone.style.background = '';
-            const file = e.dataTransfer.files[0];
-            if (file) this.handleAdminFile(file);
+            Array.from(e.dataTransfer.files).forEach(f => this.handleAdminFile(f));
         });
 
         input.addEventListener('change', () => {
-            if (input.files[0]) this.handleAdminFile(input.files[0]);
+            Array.from(input.files).forEach(f => this.handleAdminFile(f));
             input.value = '';
         });
-
-        if (removeBtn) {
-            removeBtn.addEventListener('click', () => this.clearAdminFile());
-        }
     }
 
     handleAdminFile(file) {
-        const maxSize = 10 * 1024 * 1024;
+        const maxSize = 50 * 1024 * 1024; // 50MB
         if (file.size > maxSize) {
-            showAdminToast('⚠️', 'File too large. Max 10MB.');
+            showAdminToast('⚠️', `${file.name} is too large (max 50MB).`);
             return;
         }
         const ext = file.name.split('.').pop().toLowerCase();
-        const allowed = ['jpg', 'jpeg', 'png', 'webp', 'stl'];
-        if (!allowed.includes(ext)) {
-            showAdminToast('⚠️', 'Unsupported file type.');
+        const imageExts = ['jpg', 'jpeg', 'png', 'webp'];
+        const modelExts = ['stl', 'obj', 'step', 'stp', '3mf'];
+        const isImage = imageExts.includes(ext);
+        const is3D = modelExts.includes(ext);
+
+        if (!isImage && !is3D) {
+            showAdminToast('⚠️', `Unsupported file type: .${ext}`);
             return;
         }
 
         const reader = new FileReader();
         reader.onload = (e) => {
-            this.adminUploadedFile = { dataUrl: e.target.result, name: file.name, type: file.type };
-
-            // Show preview area
-            const preview = document.getElementById('admin-file-preview');
-            const icon = document.getElementById('admin-file-icon');
-            const nameEl = document.getElementById('admin-file-name');
-            const imgPreview = document.getElementById('admin-img-preview');
-
-            if (preview) preview.style.display = 'block';
-            if (icon) icon.textContent = file.type.startsWith('image/') ? '🖼️' : '📄';
-            if (nameEl) nameEl.textContent = file.name;
-
-            if (imgPreview) {
-                if (file.type.startsWith('image/')) {
-                    imgPreview.src = e.target.result;
-                    imgPreview.style.display = 'block';
-                } else {
-                    imgPreview.style.display = 'none';
-                }
-            }
-
-            // Hide the drop zone itself
-            const zone = document.getElementById('admin-upload-zone');
-            if (zone) zone.style.display = 'none';
-
-            showAdminToast('✅', `${file.name} ready.`);
+            const entry = {
+                dataUrl: e.target.result,
+                name: file.name,
+                type: file.type,
+                kind: isImage ? 'image' : '3d'
+            };
+            if (!this.adminUploadedFiles) this.adminUploadedFiles = [];
+            this.adminUploadedFiles.push(entry);
+            this.renderAdminFilePreviews();
+            showAdminToast('✅', `${file.name} added.`);
         };
         reader.readAsDataURL(file);
     }
 
+    renderAdminFilePreviews() {
+        const files = this.adminUploadedFiles || [];
+        const images = files.filter(f => f.kind === 'image');
+        const models = files.filter(f => f.kind === '3d');
+
+        // Images grid
+        const imgSection = document.getElementById('admin-images-preview');
+        const imgGrid = document.getElementById('admin-images-grid');
+        if (imgSection && imgGrid) {
+            imgSection.style.display = images.length ? 'block' : 'none';
+            imgGrid.innerHTML = images.map((f, i) => `
+                <div style="position:relative;">
+                    <img src="${f.dataUrl}" alt="${f.name}"
+                        style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border-light);"
+                        title="${f.name}">
+                    <button type="button" data-file-index="${files.indexOf(f)}"
+                        style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--color-error);color:#fff;border:none;cursor:pointer;font-size:0.7rem;line-height:1;"
+                        onclick="adminPanel.removeAdminFile(${files.indexOf(f)})">✕</button>
+                </div>`).join('');
+        }
+
+        // 3D file chips
+        const d3Section = document.getElementById('admin-3d-preview');
+        const d3Chips = document.getElementById('admin-3d-chips');
+        if (d3Section && d3Chips) {
+            d3Section.style.display = models.length ? 'block' : 'none';
+            d3Chips.innerHTML = models.map((f) => `
+                <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius-full);font-size:0.78rem;">
+                    🖨️ ${f.name}
+                    <button type="button" onclick="adminPanel.removeAdminFile(${files.indexOf(f)})"
+                        style="background:none;border:none;color:var(--color-error);cursor:pointer;font-size:0.8rem;padding:0;">✕</button>
+                </div>`).join('');
+        }
+    }
+
+    removeAdminFile(index) {
+        if (this.adminUploadedFiles) {
+            this.adminUploadedFiles.splice(index, 1);
+            this.renderAdminFilePreviews();
+        }
+    }
+
     clearAdminFile() {
-        this.adminUploadedFile = null;
-        const preview = document.getElementById('admin-file-preview');
-        if (preview) preview.style.display = 'none';
-        const imgPreview = document.getElementById('admin-img-preview');
-        if (imgPreview) { imgPreview.src = ''; imgPreview.style.display = 'none'; }
+        this.adminUploadedFiles = [];
+        const imgSection = document.getElementById('admin-images-preview');
+        const d3Section = document.getElementById('admin-3d-preview');
+        if (imgSection) imgSection.style.display = 'none';
+        if (d3Section) d3Section.style.display = 'none';
         const zone = document.getElementById('admin-upload-zone');
-        if (zone) zone.style.display = 'block';
+        if (zone) zone.style.borderColor = 'var(--border-light)';
     }
 
     // ---------- Products Table (with category edit + delete) ----------
@@ -620,6 +646,10 @@ class AdminPanel {
 
         const newId = Math.max(100, ...PRODUCTS.map(p => p.id)) + 1;
 
+        const files = this.adminUploadedFiles || [];
+        const imageFiles = files.filter(f => f.kind === 'image');
+        const modelFiles = files.filter(f => f.kind === '3d');
+
         const newProduct = {
             id: newId,
             name,
@@ -631,11 +661,14 @@ class AdminPanel {
             dimensions: { w, h, d },
             weight,
             badge: 'new',
-            // Store uploaded image as data URL (dev only — use a server/CDN in production)
-            previewImage: this.adminUploadedFile?.type?.startsWith('image/')
-                ? this.adminUploadedFile.dataUrl
-                : null
+            // First image = main thumbnail shown in product table & card
+            previewImage: imageFiles[0]?.dataUrl || null,
+            // All images (for future gallery)
+            previewImages: imageFiles.map(f => ({ dataUrl: f.dataUrl, name: f.name })),
+            // All 3D files (stored as base64 for now)
+            modelFiles: modelFiles.map(f => ({ dataUrl: f.dataUrl, name: f.name, type: f.type }))
         };
+
 
         PRODUCTS.push(newProduct);
         this.saveCustomProducts();

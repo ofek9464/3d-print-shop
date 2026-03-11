@@ -86,6 +86,11 @@ class App {
             const icon = next === 'light' ? '☀️' : '🌙';
             if (themeBtn) themeBtn.textContent = icon;
             if (mobileThemeBtn) mobileThemeBtn.textContent = `${icon} Toggle Light / Dark Mode`;
+
+            // Update all live 3D viewer backgrounds
+            const bgColor = next === 'light' ? 0xECEEF8 : 0x0B0D17;
+            this.cardViewers.forEach(v => v?.setBackground(bgColor));
+            if (this.modalViewer) this.modalViewer.setBackground(bgColor);
         };
         if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
         if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', toggleTheme);

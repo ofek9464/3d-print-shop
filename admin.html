@@ -189,30 +189,28 @@
                                 <input type="number" id="new-product-d" placeholder="10" min="0.1" step="0.1">
                             </div>
                             <div class="form-group" style="grid-column:1/-1;">
-                                <label for="new-product-file">Product Image / STL File</label>
+                                <label>Product Images &amp; 3D Files <span style="color:var(--text-muted);font-weight:400;font-size:0.8rem;">(unlimited, drag &amp; drop or click)</span></label>
                                 <div id="admin-upload-zone"
-                                    style="border:2px dashed var(--border-light); border-radius:var(--radius-md); padding:20px; text-align:center; cursor:pointer; transition:border-color 0.2s;">
-                                    <span style="font-size:1.5rem;">📷</span>
-                                    <div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Click to
-                                        upload product photo or STL file</div>
-                                    <div style="font-size:0.72rem; color:var(--text-muted);">.JPG, .PNG, .WEBP, .STL —
-                                        Max 10MB</div>
-                                    <input type="file" id="new-product-file" accept=".jpg,.jpeg,.png,.webp,.stl"
-                                        style="display:none;">
+                                    style="border:2px dashed var(--border-light); border-radius:var(--radius-md); padding:24px; text-align:center; cursor:pointer; transition:border-color 0.2s;">
+                                    <span style="font-size:2rem;">📁</span>
+                                    <div style="font-size:0.9rem; font-weight:500; margin-top:6px;">Click or drag files here</div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Images: .JPG .PNG .WEBP &nbsp;|&nbsp; 3D Files: .STL .OBJ .STEP .3MF — Max 50MB each</div>
+                                    <input type="file" id="new-product-file"
+                                        accept=".jpg,.jpeg,.png,.webp,.stl,.obj,.step,.stp,.3mf"
+                                        multiple style="display:none;">
                                 </div>
-                                <div id="admin-file-preview"
-                                    style="display:none; margin-top:8px; padding:10px; background:var(--bg-secondary); border-radius:var(--radius-md);">
-                                    <div style="display:flex; align-items:center; gap:8px;">
-                                        <span id="admin-file-icon">📄</span>
-                                        <span id="admin-file-name"
-                                            style="flex:1; font-size:0.82rem; overflow:hidden; text-overflow:ellipsis;"></span>
-                                        <button type="button" id="admin-file-remove"
-                                            style="background:none; border:none; color:var(--color-error); cursor:pointer; font-size:1rem;">✕</button>
-                                    </div>
-                                    <img id="admin-img-preview" src="" alt="Preview"
-                                        style="display:none; margin-top:8px; max-height:120px; border-radius:var(--radius-md);">
+                                <!-- Image previews grid -->
+                                <div id="admin-images-preview" style="display:none; margin-top:10px;">
+                                    <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:6px;">📷 Images</div>
+                                    <div id="admin-images-grid" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+                                </div>
+                                <!-- 3D file chips -->
+                                <div id="admin-3d-preview" style="display:none; margin-top:10px;">
+                                    <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:6px;">🖨️ 3D Files</div>
+                                    <div id="admin-3d-chips" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
                                 </div>
                             </div>
+
                         </div>
                         <div style="display:flex; gap:12px; margin-top:16px;">
                             <button class="btn btn-primary" id="add-product-save">✅ Add Product</button>

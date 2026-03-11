@@ -624,7 +624,7 @@ h4 {
 
 .product-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(0, 212, 255, 0.2);
+    border-color: var(--border-accent);
     box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
@@ -2169,9 +2169,18 @@ h4 {
 }
 [data-theme="light"] .product-card {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
 }
 [data-theme="light"] .product-card:hover {
-    box-shadow: 0 6px 24px rgba(0, 152, 200, 0.18);
+    box-shadow: 0 6px 24px rgba(0, 152, 200, 0.15);
+    border-color: var(--border-accent);
+}
+[data-theme="light"] .product-card-preview {
+    background: var(--bg-secondary);
+}
+[data-theme="light"] .product-card-preview .preview-overlay {
+    background: linear-gradient(to top, var(--bg-card) 0%, transparent 40%);
 }
 [data-theme="light"] .modal-backdrop {
     background: rgba(0, 0, 0, 0.4);

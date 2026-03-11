@@ -25,9 +25,14 @@ class ModelViewer {
     }
 
     init() {
+        // Pick canvas background colour from current theme
+        const isLight = document.documentElement.dataset.theme === 'light';
+        const defaultBg = isLight ? 0xECEEF8 : 0x0B0D17;
+
         // Scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(this.options.backgroundColor);
+        this.scene.background = new THREE.Color(this.options.backgroundColor || defaultBg);
+
 
         // Camera
         const rect = this.container.getBoundingClientRect();
@@ -703,7 +708,6 @@ class ModelViewer {
         const colorObj = new THREE.Color(color);
         this.model.traverse(child => {
             if (child.isMesh && child.material) {
-                // Skip materials with actual emissive glow (e.g. robot eyes) — don't recolor those
                 if (child.material.emissive &&
                     child.material.emissive.getHex() !== 0x000000 &&
                     child.material.emissiveIntensity > 0.5) return;
@@ -712,6 +716,12 @@ class ModelViewer {
                 }
             }
         });
+    }
+
+    setBackground(hexColor) {
+        if (this.scene) {
+            this.scene.background = new THREE.Color(hexColor);
+        }
     }
 
     onResize() {
